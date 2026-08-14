@@ -113,7 +113,7 @@ DELETE /api/admin/:id        Delete admin
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/peripateticlearner/backend-capstone
+git clone https://github.com/alikirat/backend-capstone
 cd backend-capstone
 ```
 
@@ -217,7 +217,7 @@ Returns `{"status": "ok"}` when server is running. Used by UptimeRobot for monit
 
 ## Related Repository
 
-**Frontend:** [https://github.com/peripateticlearner/frontend-capstone](https://github.com/peripateticlearner/frontend-capstone)
+**Frontend:** [https://github.com/alikirat/frontend-capstone](https://github.com/alikirat/frontend-capstone)
 
 ---
 
