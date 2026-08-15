@@ -4,6 +4,8 @@
 
 RESTful API backend for a ride-booking application, demonstrating secure authentication, authorization, and database management with the MERN stack.
 
+![Atlas Taxi frontend powered by this API](docs/screenshot.png)
+
 ## 🚀 Live Deployment
 
 **Frontend:** https://atlastaxi.netlify.app  
