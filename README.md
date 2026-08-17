@@ -11,7 +11,7 @@ RESTful API backend for a ride-booking application, demonstrating secure authent
 **Frontend:** https://atlastaxi.netlify.app  
 **Backend:** Deployed on Render
 
-> **Note:** This is a portfolio/demonstration project. All data is for testing purposes only.
+> **Note:** This is a portfolio/demonstration project. All data is for testing purposes only — please don't enter real personal information. Any non-demo data may be periodically removed.
 
 ## Features
 
