@@ -53,7 +53,7 @@ PATCH  /api/rides/:id  Update ride status
 DELETE /api/rides/:id  Delete ride
 ```
 
-### Users
+### Users (Admin-only)
 ```
 GET /api/user        Get all users
 GET /api/user/:id    Get user by ID
