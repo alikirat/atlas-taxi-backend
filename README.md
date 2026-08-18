@@ -115,8 +115,8 @@ DELETE /api/admin/:id        Delete admin
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/alikirat/backend-capstone
-cd backend-capstone
+git clone https://github.com/alikirat/atlas-taxi-backend
+cd atlas-taxi-backend
 ```
 
 2. **Install dependencies**
@@ -146,7 +146,7 @@ Server will run on `http://localhost:4000`
 
 ## Project Structure
 ```
-backend-capstone/
+atlas-taxi-backend/
 ├── models/
 │   ├── User.js           User schema
 │   ├── Admin.js          Admin schema
@@ -219,7 +219,7 @@ Returns `{"status": "ok"}` when server is running. Used by UptimeRobot for monit
 
 ## Related Repository
 
-**Frontend:** [https://github.com/alikirat/frontend-capstone](https://github.com/alikirat/frontend-capstone)
+**Frontend:** [https://github.com/alikirat/atlas-taxi-frontend](https://github.com/alikirat/atlas-taxi-frontend)
 
 ---
 
