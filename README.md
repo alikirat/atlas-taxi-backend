@@ -1,8 +1,8 @@
 # Atlas Taxi - Backend API
 
-**Full-Stack Development Capstone Project**
+**Full-Stack Development Project**
 
-RESTful API backend for a ride-booking application, demonstrating secure authentication, authorization, and database management with the MERN stack.
+Originally built as a full-stack capstone project, since expanded with production-style features like role-based auth, an admin dashboard, and ongoing polish. RESTful API backend for a ride-booking application, demonstrating secure authentication, authorization, and database management with the MERN stack.
 
 ![Atlas Taxi frontend powered by this API](docs/screenshot.png)
 
@@ -11,7 +11,7 @@ RESTful API backend for a ride-booking application, demonstrating secure authent
 **Frontend:** https://atlastaxi.netlify.app  
 **Backend:** Deployed on Render
 
-> **Note:** This is a portfolio/demonstration project. All data is for testing purposes only — please don't enter real personal information. Any non-demo data may be periodically removed.
+> **Note:** This is a portfolio/demonstration project. All data is for testing purposes only. Please don't enter real personal information. Any non-demo data may be periodically removed.
 
 ## Features
 
