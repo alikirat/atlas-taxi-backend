@@ -144,6 +144,19 @@ npm start
 
 Server will run on `http://localhost:4000`
 
+## Testing
+
+The test suite uses Vitest and Supertest against an in-memory MongoDB
+(`mongodb-memory-server`), so it never touches a real database:
+
+```bash
+npm test
+```
+
+Tests live in `tests/` and cover auth (register/login), admin-only access
+to `/api/user`, and ride booking/ownership (including that a rider can only
+update, cancel, or view their own rides).
+
 ## Project Structure
 ```
 atlas-taxi-backend/
@@ -159,9 +172,11 @@ atlas-taxi-backend/
 │   └── health.js         Health check
 ├── middleware/
 │   └── authenticateJWT.js  JWT verification
+├── tests/                Vitest + Supertest suite
 ├── .env.example          Environment template
 ├── .gitignore
-├── index.js              Server entry point
+├── app.js                Express app (routes, middleware)
+├── index.js              Server entry point (DB connect + listen)
 └── package.json
 ```
 
