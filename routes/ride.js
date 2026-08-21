@@ -85,7 +85,7 @@ router.patch("/:id", authenticateJWT, async (req, res) => {
         }
         
         // Check if the user is authorized to update the ride
-        if (req.user?.userId && ride.rider !== req.user.userId) {
+        if (req.user?.userId && ride.rider.toString() !== req.user.userId) {
             return res.status(403).json({ message: "You are not authorized to update this ride" });
         }
 
@@ -111,7 +111,7 @@ router.delete("/:id", authenticateJWT, async (req, res) => {
       }
 
       // Check if the user is authorized to delete the ride
-      if (req.user?.userId && ride.rider !== req.user.userId) {
+      if (req.user?.userId && ride.rider.toString() !== req.user.userId) {
         return res.status(403).json({ message: "You are not authorized to delete this ride" });
       }
 
