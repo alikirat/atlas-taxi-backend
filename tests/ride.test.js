@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import request from "supertest";
 import app from "../app.js";
+import Ride from "../models/Ride.js";
 
 async function registerAndLoginUser(email) {
   const payload = {
@@ -13,6 +14,19 @@ async function registerAndLoginUser(email) {
   const res = await request(app).post("/api/auth/user-login").send({
     email,
     password: payload.password,
+  });
+  return res.body.token;
+}
+
+async function registerAndLoginAdmin() {
+  await request(app).post("/api/auth/admin-register").send({
+    username: "rideadmin",
+    email: "rideadmin@example.com",
+    password: "adminpass123",
+  });
+  const res = await request(app).post("/api/auth/admin-login").send({
+    email: "rideadmin@example.com",
+    password: "adminpass123",
   });
   return res.body.token;
 }
@@ -101,8 +115,8 @@ describe("PATCH /api/rides/:id (ownership)", () => {
   });
 });
 
-describe("DELETE /api/rides/:id (ownership)", () => {
-  it("lets a user delete their own ride", async () => {
+describe("DELETE /api/rides/:id (rider cancellation)", () => {
+  it("lets a user cancel their own scheduled ride without removing the record", async () => {
     const token = await registerAndLoginUser("deleter@example.com");
     const createRes = await request(app)
       .post("/api/rides")
@@ -114,10 +128,15 @@ describe("DELETE /api/rides/:id (ownership)", () => {
       .delete(`/api/rides/${rideId}`)
       .set("Authorization", `Bearer ${token}`);
 
-    expect(deleteRes.status).toBe(204);
+    expect(deleteRes.status).toBe(200);
+    expect(deleteRes.body.ride.status).toBe("Cancelled");
+
+    const stillExists = await Ride.findById(rideId);
+    expect(stillExists).not.toBeNull();
+    expect(stillExists.status).toBe("Cancelled");
   });
 
-  it("blocks a different user from deleting someone else's ride", async () => {
+  it("blocks a different user from cancelling someone else's ride", async () => {
     const ownerToken = await registerAndLoginUser("owner3@example.com");
     const otherToken = await registerAndLoginUser("intruder2@example.com");
 
@@ -132,5 +151,65 @@ describe("DELETE /api/rides/:id (ownership)", () => {
       .set("Authorization", `Bearer ${otherToken}`);
 
     expect(deleteRes.status).toBe(403);
+  });
+
+  it("rejects cancelling a ride that is already in progress", async () => {
+    const token = await registerAndLoginUser("inprogress@example.com");
+    const createRes = await request(app)
+      .post("/api/rides")
+      .set("Authorization", `Bearer ${token}`)
+      .send(validRide);
+    const rideId = createRes.body.ride._id;
+
+    await request(app)
+      .patch(`/api/rides/${rideId}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({ status: "In Progress" });
+
+    const deleteRes = await request(app)
+      .delete(`/api/rides/${rideId}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(deleteRes.status).toBe(400);
+  });
+
+  it("rejects cancelling a ride that is already completed", async () => {
+    const token = await registerAndLoginUser("completed@example.com");
+    const createRes = await request(app)
+      .post("/api/rides")
+      .set("Authorization", `Bearer ${token}`)
+      .send(validRide);
+    const rideId = createRes.body.ride._id;
+
+    await request(app)
+      .patch(`/api/rides/${rideId}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({ status: "Completed" });
+
+    const deleteRes = await request(app)
+      .delete(`/api/rides/${rideId}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(deleteRes.status).toBe(400);
+  });
+
+  it("lets an admin permanently delete a ride", async () => {
+    const userToken = await registerAndLoginUser("hard-delete-target@example.com");
+    const adminToken = await registerAndLoginAdmin();
+
+    const createRes = await request(app)
+      .post("/api/rides")
+      .set("Authorization", `Bearer ${userToken}`)
+      .send(validRide);
+    const rideId = createRes.body.ride._id;
+
+    const deleteRes = await request(app)
+      .delete(`/api/rides/${rideId}`)
+      .set("Authorization", `Bearer ${adminToken}`);
+
+    expect(deleteRes.status).toBe(204);
+
+    const stillExists = await Ride.findById(rideId);
+    expect(stillExists).toBeNull();
   });
 });

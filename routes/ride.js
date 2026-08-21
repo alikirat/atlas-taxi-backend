@@ -100,27 +100,39 @@ router.patch("/:id", authenticateJWT, async (req, res) => {
 });
 
 /**
- * DELETE /api/rides/:id - Delete a ride by ID (secured)
+ * DELETE /api/rides/:id - Cancel (riders) or permanently delete (admins) a ride by ID (secured)
  */
 router.delete("/:id", authenticateJWT, async (req, res) => {
     try {
       const ride = await Ride.findById(req.params.id);
-      
+
       if (!ride) {
         return res.status(404).json({ message: "Ride not found" });
       }
 
-      // Check if the user is authorized to delete the ride
+      // Check if the user is authorized to act on the ride
       if (req.user?.userId && ride.rider.toString() !== req.user.userId) {
-        return res.status(403).json({ message: "You are not authorized to delete this ride" });
+        return res.status(403).json({ message: "You are not authorized to cancel this ride" });
       }
 
-      // Admins can delete any ride
+      // Riders can only cancel their own ride, and only while it's still scheduled.
+      // Admins bypass this and permanently delete the record.
+      if (req.user?.userId) {
+        if (ride.status !== "Scheduled") {
+          return res.status(400).json({ message: "Only scheduled rides can be cancelled" });
+        }
+
+        ride.status = "Cancelled";
+        await ride.save();
+
+        return res.status(200).json({ message: "Ride cancelled successfully", ride });
+      }
+
       await Ride.findByIdAndDelete(req.params.id);
 
       res.status(204).json({ message: "Ride deleted successfully" });
     } catch (err) {
-      res.status(500).json({ message: "Failed to delete ride", error: err.message });
+      res.status(500).json({ message: "Failed to cancel ride", error: err.message });
     }
   });
 export default router;
